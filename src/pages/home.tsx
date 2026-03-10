@@ -14,6 +14,7 @@ function Home() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [selectedRegion, setSelectedRegion] = useState("");
+  const [sortMode, setSortMode] = useState("random");
 
   useEffect(() => {
     const loadCountries = async () => {
@@ -56,6 +57,23 @@ function Home() {
     return matchesSearch && matchesRegion;
   });
 
+  function sortCountries(countries: Country[], mode: string) {
+    const sorted = [...countries];
+
+    if (mode === "az") {
+      sorted.sort((a, b) => a.name.common.localeCompare(b.name.common));
+    }
+    if (mode === "za") {
+      sorted.sort((a, b) => b.name.common.localeCompare(a.name.common));
+    }
+    if (mode === "random") {
+      sorted.sort(() => Math.random() - 0.5);
+    }
+    return sorted;
+  }
+
+  const sortedCountries = sortCountries(filteredCountries, sortMode);
+
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
       {/* Header & Controls */}
@@ -90,6 +108,19 @@ function Home() {
             <option value="Europe">Europe</option>
             <option value="Oceania">Oceania</option>
           </select>
+
+          <label className="text-sm text-gray-500 whitespace-nowrap">
+            Order:
+          </label>
+          <select
+            className="px-3 py-2.5 rounded-xl border border-gray-200 bg-white shadow-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition cursor-pointer"
+            value={sortMode}
+            onChange={(e) => setSortMode(e.target.value)}
+          >
+            <option value="random">Random</option>
+            <option value="az">A-Z</option>
+            <option value="za">Z-A</option>
+          </select>
         </form>
       </header>
 
@@ -105,13 +136,13 @@ function Home() {
         </div>
       ) : (
         <main className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-8 max-w-6xl mx-auto">
-          {filteredCountries.map((country, index) => (
+          {sortedCountries.map((country, index) => (
             <CountryCard
               key={index}
               country={{
                 img: country.flags.png,
                 img_alt: country.flags.alt,
-                name: country.name.official,
+                name: country.name.common,
                 continent: country.region,
               }}
             />
