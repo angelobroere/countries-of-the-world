@@ -75,7 +75,8 @@ function Home() {
   const sortedCountries = sortCountries(filteredCountries, sortMode);
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans">
+    <>
+    <div className="min-h-[95vh] bg-gray-50 font-sans">
       {/* Header & Controls */}
       <header className="flex flex-col sm:flex-row items-center justify-center px-8 py-10 bg-white shadow gap-6 sm:gap-16">
         <h1 className="text-4xl font-bold text-center text-gray-800 tracking-tight">
@@ -149,7 +150,9 @@ function Home() {
           ))}
         </main>
       )}
-      <footer className="flex justify-center min-h-10 px-8 py-4 bg-white shadow-lg">
+      
+    </div>
+    <footer className="flex justify-center min-h-[5vh] px-8 py-4 bg-white shadow-lg mb-0 w-full">
         <a
           href="https://github.com/angelobroere"
           target="_blank"
@@ -167,7 +170,7 @@ function Home() {
           </span>
         </a>
       </footer>
-    </div>
+      </>
   );
 }
 
