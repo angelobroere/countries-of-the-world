@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { searchCountry } from "../services/api";
+import { getCountryWiki } from "../services/wiki_api";
 import { useEffect, useState } from "react";
 
 function Country() {
@@ -17,23 +18,48 @@ function Country() {
     continents: [];
   }
 
+  interface CountryWiki {
+    extract: string;
+    content_urls: {
+      desktop: {
+        page: string;
+      };
+    };
+  }
+
   const [country, setCountry] = useState<Country>();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const [countryWiki, setCountyWiki] = useState<CountryWiki>();
 
   useEffect(() => {
-    const loadCountries = async () => {
+    const loadCountry = async () => {
       try {
         const fetchedcountry = await searchCountry(countryname);
         setCountry(fetchedcountry[0]);
       } catch (err) {
         console.log(err);
-        setError("Failed to load countries ...");
+        setError("Failed to load country information.");
       } finally {
         setLoading(false);
       }
     };
-    loadCountries();
+    loadCountry();
+  }, []);
+
+  useEffect(() => {
+    const loadCountryWiki = async () => {
+      try {
+        const fetchedwiki = await getCountryWiki(countryname);
+        setCountyWiki(fetchedwiki);
+      } catch (err) {
+        console.log(err);
+        setError("Failed to load country wiki");
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadCountryWiki();
   }, []);
 
   return (
@@ -57,6 +83,8 @@ function Country() {
                 <p>Population: {country.population.toLocaleString()}</p>
                 <p>Area: {country.area.toLocaleString()}km²</p>
 
+                {countryWiki && <p>{countryWiki.extract} [<a className="text-blue" href={countryWiki.content_urls.desktop.page} target="_blank">wiki</a>]</p>}
+
                 <img src={country.flags.png} alt={country.flags.alt} />
                 <img
                   src={country.coatOfArms.png}
@@ -64,12 +92,12 @@ function Country() {
                 />
 
                 {country.latlng?.length > 0 && (
-                <iframe
-                  width="100%"
-                  height="400"
-                  src={`https://www.openstreetmap.org/export/embed.html?bbox=${country.latlng[1]-5},${country.latlng[0]-5},${country.latlng[1]+5},${country.latlng[0]+5}&layer=mapnik`}
-                />
-              )}
+                  <iframe
+                    width="100%"
+                    height="400"
+                    src={`https://www.openstreetmap.org/export/embed.html?bbox=${country.latlng[1] - 5},${country.latlng[0] - 5},${country.latlng[1] + 5},${country.latlng[0] + 5}&layer=mapnik`}
+                  />
+                )}
               </div>
             )
           )}
