@@ -6,6 +6,11 @@ import { useEffect, useState } from "react";
 function Country() {
   const { countryname = "" } = useParams();
 
+  type Currency = {
+    symbol: string;
+    name: string;
+  };
+
   interface Country {
     name: { common: string; official: string };
     flags: { png: string; alt: string };
@@ -15,7 +20,10 @@ function Country() {
     region: string;
     population: number;
     area: number;
-    continents: [];
+    continents: string[];
+    languages: Record<string, string>;
+    capital: Record<number, string>;
+    currencies: Record<string, Currency>;
   }
 
   interface CountryWiki {
@@ -67,7 +75,7 @@ function Country() {
       <div className="min-h-[95vh] bg-gray-50 font-sans">
         <header className="flex flex-col sm:flex-row items-center justify-center px-8 py-10 bg-white shadow gap-6 sm:gap-16">
           <h1 className="text-4xl font-bold text-center text-gray-800 tracking-tight">
-            🌍 Countries of the World
+            <a href="/">🌍 Countries of the World</a>
           </h1>
         </header>
         <main className="p-8 max-w-6xl mx-auto">
@@ -78,12 +86,56 @@ function Country() {
             country && (
               <div>
                 <h2 className="text-3xl">{country.name.common}</h2>
-                <h5 className="text-xl">{country.name.official}</h5>
-                <p>Continent: {country.continents}</p>
-                <p>Population: {country.population.toLocaleString()}</p>
-                <p>Area: {country.area.toLocaleString()}km²</p>
+                {country.name.common != country.name.official && (
+                  <h5 className="text-xl">{country.name.official}</h5>
+                )}
+                {Object.values(country.capital).length > 1 ? (
+                  <p>Capitals: {Object.values(country.capital).join(", ")}</p>
+                ) : (
+                  <p>Capital: {Object.values(country.capital)}</p>
+                )}
+                {country.continents.length > 1 ? (
+                  <p>Continents: {country.continents.join(", ")}</p>
+                ) : (
+                  <p>Continent: {country.continents}</p>
+                )}
 
-                {countryWiki && <p>{countryWiki.extract} [<a className="text-blue" href={countryWiki.content_urls.desktop.page} target="_blank">wiki</a>]</p>}
+                <p>Population: {country.population.toLocaleString()}</p>
+                {Object.values(country.languages).length > 1 ? (
+                  <p>
+                    Languages: {Object.values(country.languages).join(", ")}
+                  </p>
+                ) : (
+                  <p>Language: {Object.values(country.languages)}</p>
+                )}
+                <p>Area: {country.area.toLocaleString()} km²</p>
+                <p>
+                  {Object.entries(country.currencies).length > 1
+                    ? "Currencies: "
+                    : "Currency: "}
+                  {Object.entries(country.currencies).map(
+                    ([code, currency], index, arr) => (
+                      <span key={code}>
+                        {currency.symbol} ({currency.name})
+                        {index < arr.length - 1 ? ", " : ""}
+                      </span>
+                    ),
+                  )}
+                </p>
+
+                {countryWiki && (
+                  <p>
+                    {countryWiki.extract} [
+                    <a
+                      className="text-blue"
+                      href={countryWiki.content_urls.desktop.page}
+                      target="_blank"
+                    >
+                      wiki
+                    </a>
+                    ]
+                  </p>
+                )}
 
                 <img src={country.flags.png} alt={country.flags.alt} />
                 <img
