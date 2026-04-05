@@ -84,72 +84,87 @@ function Country() {
             <div>Loading ...</div>
           ) : (
             country && (
-              <div>
-                <h2 className="text-3xl">{country.name.common}</h2>
-                {country.name.common != country.name.official && (
-                  <h5 className="text-xl">{country.name.official}</h5>
-                )}
-                {Object.values(country.capital).length > 1 ? (
-                  <p>Capitals: {Object.values(country.capital).join(", ")}</p>
-                ) : (
-                  <p>Capital: {Object.values(country.capital)}</p>
-                )}
-                {country.continents.length > 1 ? (
-                  <p>Continents: {country.continents.join(", ")}</p>
-                ) : (
-                  <p>Continent: {country.continents}</p>
-                )}
-
-                <p>Population: {country.population.toLocaleString()}</p>
-                {Object.values(country.languages).length > 1 ? (
-                  <p>
-                    Languages: {Object.values(country.languages).join(", ")}
-                  </p>
-                ) : (
-                  <p>Language: {Object.values(country.languages)}</p>
-                )}
-                <p>Area: {country.area.toLocaleString()} km²</p>
-                <p>
-                  {Object.entries(country.currencies).length > 1
-                    ? "Currencies: "
-                    : "Currency: "}
-                  {Object.entries(country.currencies).map(
-                    ([code, currency], index, arr) => (
-                      <span key={code}>
-                        {currency.symbol} ({currency.name})
-                        {index < arr.length - 1 ? ", " : ""}
-                      </span>
-                    ),
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="col-span-2">
+                  <h2 className="text-3xl text-center">
+                    {country.name.common}
+                  </h2>
+                  {country.name.common != country.name.official && (
+                    <h5 className="text-xl text-center">
+                      {country.name.official}
+                    </h5>
                   )}
-                </p>
-
-                {countryWiki && (
+                  <hr className="border-none h-px bg-linear-to-r from-transparent via-gray-300 to-transparent my-6" />
+                </div>
+                <div>
+                  {Object.values(country.capital).length > 1 ? (
+                    <p>Capitals: {Object.values(country.capital).join(", ")}</p>
+                  ) : (
+                    <p>Capital: {Object.values(country.capital)}</p>
+                  )}
+                  {country.continents.length > 1 ? (
+                    <p>Continents: {country.continents.join(", ")}</p>
+                  ) : (
+                    <p>Continent: {country.continents}</p>
+                  )}
+                  <p>Population: {country.population.toLocaleString()}</p>
+                  {Object.values(country.languages).length > 1 ? (
+                    <p>
+                      Languages: {Object.values(country.languages).join(", ")}
+                    </p>
+                  ) : (
+                    <p>Language: {Object.values(country.languages)}</p>
+                  )}
+                  <p>Area: {country.area.toLocaleString()} km²</p>
                   <p>
-                    {countryWiki.extract} [
-                    <a
-                      className="text-blue"
-                      href={countryWiki.content_urls.desktop.page}
-                      target="_blank"
-                    >
-                      wiki
-                    </a>
-                    ]
+                    {Object.entries(country.currencies).length > 1
+                      ? "Currencies: "
+                      : "Currency: "}
+                    {Object.entries(country.currencies).map(
+                      ([code, currency], index, arr) => (
+                        <span key={code}>
+                          {currency.symbol} ({currency.name})
+                          {index < arr.length - 1 ? ", " : ""}
+                        </span>
+                      ),
+                    )}
                   </p>
-                )}
-
-                <img src={country.flags.png} alt={country.flags.alt} />
-                <img
-                  src={country.coatOfArms.png}
-                  alt={country.coatOfArms.alt}
-                />
-
-                {country.latlng?.length > 0 && (
-                  <iframe
-                    width="100%"
-                    height="400"
-                    src={`https://www.openstreetmap.org/export/embed.html?bbox=${country.latlng[1] - 5},${country.latlng[0] - 5},${country.latlng[1] + 5},${country.latlng[0] + 5}&layer=mapnik`}
+                  <br />
+                  {countryWiki && (
+                    <p>
+                      {countryWiki.extract} [
+                      <a
+                        className="text-blue"
+                        href={countryWiki.content_urls.desktop.page}
+                        target="_blank"
+                      >
+                        wiki
+                      </a>
+                      ]
+                    </p>
+                  )}
+                </div>
+                <div className="flex flex-col gap-4 items-center w-full">
+                  <img
+                    className="w-72 h-48 object-contain"
+                    src={country.flags.png}
+                    alt={country.flags.alt}
                   />
-                )}
+                  <img
+                    className="w-72 h-48 object-contain"
+                    src={country.coatOfArms.png}
+                    alt={country.coatOfArms.alt}
+                  />
+                </div>
+                <div className="col-span-2">
+                  {country.latlng?.length > 0 && (
+                    <iframe
+                      width="100%"
+                      height="400"
+                      src={`https://www.openstreetmap.org/export/embed.html?bbox=${country.latlng[1] - 5},${country.latlng[0] - 5},${country.latlng[1] + 5},${country.latlng[0] + 5}&layer=mapnik`}
+                    />
+                  )}
+                </div>
               </div>
             )
           )}
